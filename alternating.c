@@ -7,9 +7,27 @@
 */
 static int make_dual(void);
 
+#ifdef DO_PROFILING
+unsigned long long int isAlternatingCount = 0; 
+
+unsigned long long int fastFilterCalled = 0; 
+unsigned long long int fastFilterPassed = 0; 
+int fastFilterCalls[MAXE/2+1];
+int fastFilterPruned[MAXE/2+1];
+
+unsigned long long int preFilterCalled = 0; 
+unsigned long long int preFilterPassed = 0; 
+int preFilterCalls[MAXE/2+1];
+int preFilterPruned[MAXE/2+1];
+#endif
+
 #define FILTER isAlternating
 
 static int isAlternating(int nbtot, int nbop, int doflip) {
+#ifdef DO_PROFILING
+    isAlternatingCount++;
+#endif
+    
     int i;
     EDGE *e, *elast;
     
@@ -42,21 +60,38 @@ static int isAlternating(int nbtot, int nbop, int doflip) {
 #define FAST_FILTER_POLY checkDeletedEdge(e->start,e->end)
 
 static int checkDeletedEdge(int v1, int v2){
+#ifdef DO_PROFILING
+    fastFilterCalled++;
+    fastFilterCalls[ne/2]++;
+#endif
     EDGE *e, *elast;
     if(degree[v1]==3){
         e = elast = firstedge[v1];
         do {
-            if(degree[e->end]==3) return 0;
+            if(degree[e->end]==3){
+#ifdef DO_PROFILING
+                fastFilterPruned[ne/2]++;
+#endif
+                return 0;
+            }
             e = e->next;
         } while(e != elast);
     }
     if(degree[v2]==3){
         e = elast = firstedge[v2];
         do {
-            if(degree[e->end]==3) return 0;
+            if(degree[e->end]==3){
+#ifdef DO_PROFILING
+                fastFilterPruned[ne/2]++;
+#endif
+                return 0;
+            }
             e = e->next;
         } while(e != elast);
     }
+#ifdef DO_PROFILING
+    fastFilterPassed++;
+#endif
     return 1;
 }
 
@@ -74,12 +109,20 @@ static int preFilterPoly(){
     int i;
     EDGE *e, *elast;
 
+#ifdef DO_PROFILING
+    preFilterCalled++;
+    preFilterCalls[ne/2]++;
+#endif
+
     for(i = 0; i<nv; i++){
         if(degree[i]==4){
             e = elast = firstedge[i];
             do {
                 if(degree[e->end]==4){
                     if(e->next->end == e->invers->prev->end && degree[e->next->end]==3){
+#ifdef DO_PROFILING
+                        preFilterPruned[ne/2]++;
+#endif
                         return 0;
                     }
                     //other direction will be handle, when we're looking at the other vertex
@@ -88,6 +131,47 @@ static int preFilterPoly(){
             } while(e != elast);
         }
     }
+
+#ifdef DO_PROFILING
+    preFilterPassed++;
+#endif
         
     return 1;
 }
+
+#ifdef DO_PROFILING
+
+#define SUMMARY alternating_summary
+
+void alternating_summary() {  
+    fprintf(stderr, "Calls to isAlternating: %llu\n", isAlternatingCount);
+    fprintf(stderr, "\nPRE_FILTER_POLY\n===============\n\n");
+    fprintf(stderr, "Calls to preFilterPoly: %llu\n", preFilterCalled);
+    fprintf(stderr, "Passed to preFilterPoly: %llu\n", preFilterPassed);
+    int i;
+    for(i=3*nv/2;i<3*nv-6;i++){
+        if(preFilterCalls[i])
+                fprintf(stderr, "pruned after removing %2d edges: %d/%d (%.2f%%)\n", 3*nv-6-i, preFilterPruned[i], preFilterCalls[i], preFilterPruned[i]*100.0/preFilterCalls[i]);
+    }
+    fprintf(stderr, "\nFAST_FILTER_POLY\n================\n\n");
+    fprintf(stderr, "Calls to fastFilterPoly: %llu\n", fastFilterCalled);
+    fprintf(stderr, "Passed to fastFilterPoly: %llu\n", fastFilterPassed);
+    for(i=3*nv/2;i<3*nv-6+1;i++){
+        if(fastFilterCalls[i])
+                fprintf(stderr, "pruned after removing %2d edges: %d/%d (%.2f%%)\n", 3*nv-6-i, fastFilterPruned[i], fastFilterCalls[i], fastFilterPruned[i]*100.0/fastFilterCalls[i]);
+    }
+    fprintf(stderr, "\n\n");
+}
+
+#define PLUGIN_INIT initPlugin()
+
+static void initPlugin(){
+    int i;
+    for(i=0;i<3*nv-6+1;i++){
+        preFilterPruned[i]=0;
+        preFilterCalls[i]=0;
+        fastFilterPruned[i]=0;
+        fastFilterCalls[i]=0;
+    }
+}
+#endif
