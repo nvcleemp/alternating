@@ -1,5 +1,7 @@
 all: plantri alternating
 
+clean: 
+
 plantri: plantri.c
 	$(CC) -o plantri -O4 plantri.c
 
