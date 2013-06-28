@@ -59,3 +59,35 @@ static int checkDeletedEdge(int v1, int v2){
     }
     return 1;
 }
+
+#define PRE_FILTER_POLY preFilterPoly()
+
+static int preFilterPoly(){
+    /*
+     * No need to check for neighbouring edges of degree 3 at this point.
+     * For the initial triangulation it is not possible that this happens,
+     * and as soon as deleting an edge leads to two neighbouring edges of
+     * degree 3, that operation is rejected by FAST_FILTER_POLY
+     * 
+     * We first look for any (3,4,4)-triangles
+     */
+    int i;
+    EDGE *e, *elast;
+
+    for(i = 0; i<nv; i++){
+        if(degree[i]==4){
+            e = elast = firstedge[i];
+            do {
+                if(degree[e->end]==4){
+                    if(e->next->end == e->invers->prev->end && degree[e->next->end]==3){
+                        return 0;
+                    }
+                    //other direction will be handle, when we're looking at the other vertex
+                }
+                e = e->next;
+            } while(e != elast);
+        }
+    }
+        
+    return 1;
+}
