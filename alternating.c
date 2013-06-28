@@ -21,6 +21,8 @@ int preFilterCalls[MAXE/2+1];
 int preFilterPruned[MAXE/2+1];
 #endif
 
+#ifndef NO_FINAL_FILTER
+
 #define FILTER isAlternating
 
 static int isAlternating(int nbtot, int nbop, int doflip) {
@@ -56,6 +58,8 @@ static int isAlternating(int nbtot, int nbop, int doflip) {
     
     return 1;
 }
+
+#endif //NO_FINAL_FILTER
 
 #define FAST_FILTER_POLY checkDeletedEdge(e->start,e->end)
 
