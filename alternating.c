@@ -61,6 +61,8 @@ static int isAlternating(int nbtot, int nbop, int doflip) {
 
 #endif //NO_FINAL_FILTER
 
+#ifndef NO_FAST_FILTER_POLY
+
 #define FAST_FILTER_POLY checkDeletedEdge(e->start,e->end)
 
 static int checkDeletedEdge(int v1, int v2){
@@ -98,6 +100,10 @@ static int checkDeletedEdge(int v1, int v2){
 #endif
     return 1;
 }
+
+#endif //NO_FAST_FILTER_POLY
+
+#ifndef NO_PRE_FILTER_POLY
 
 #define PRE_FILTER_POLY preFilterPoly()
 
@@ -142,6 +148,8 @@ static int preFilterPoly(){
         
     return 1;
 }
+
+#endif //NO_PRE_FILTER_POLY
 
 #ifdef DO_PROFILING
 
