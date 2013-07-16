@@ -4,6 +4,8 @@
        cc -o alternating -O4 '-DPLUGIN="alternating.c"' plantri.c
 
    This plug-in generates alternating planar graphs.   
+  
+ Do not use this version: it is slower than the version with two filters.
 */
 static int make_dual(void);
 
