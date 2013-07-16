@@ -125,11 +125,11 @@ static int preFilterPoly(){
 #endif
 
     for(i = 0; i<nv; i++){
-        if(degree[i]==4){
+        if(degree[i]==3){
             e = elast = firstedge[i];
             do {
                 if(degree[e->end]==4){
-                    if(e->next->end == e->invers->prev->end && degree[e->next->end]==3){
+                    if(e->next->end == e->invers->prev->end && degree[e->next->end]==4){
 #ifdef DO_PROFILING
                         preFilterPruned[ne/2]++;
 #endif
