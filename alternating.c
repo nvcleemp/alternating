@@ -109,9 +109,9 @@ static int checkDeletedEdge(int v1, int v2){
 
 static int preFilterPoly(){
     /*
-     * No need to check for neighbouring edges of degree 3 at this point.
+     * No need to check for neighbouring vertices of degree 3 at this point.
      * For the initial triangulation it is not possible that this happens,
-     * and as soon as deleting an edge leads to two neighbouring edges of
+     * and as soon as deleting an edge leads to two neighbouring vertices of
      * degree 3, that operation is rejected by FAST_FILTER_POLY
      * 
      * We first look for any (3,4,4)-triangles
