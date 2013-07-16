@@ -79,6 +79,12 @@ static int checkDeletedEdge(int v1, int v2){
                 fastFilterPruned[ne/2]++;
 #endif
                 return 0;
+            } else if(degree[e->end]==4 && degree[e->next->end]==4 
+                    && e->next->end == e->invers->prev->end){
+#ifdef DO_PROFILING
+                fastFilterPruned[ne/2]++;
+#endif
+                return 0;
             }
             e = e->next;
         } while(e != elast);
@@ -87,6 +93,38 @@ static int checkDeletedEdge(int v1, int v2){
         e = elast = firstedge[v2];
         do {
             if(degree[e->end]==3){
+#ifdef DO_PROFILING
+                fastFilterPruned[ne/2]++;
+#endif
+                return 0;
+            } else if(degree[e->end]==4 && degree[e->next->end]==4 
+                    && e->next->end == e->invers->prev->end){
+#ifdef DO_PROFILING
+                fastFilterPruned[ne/2]++;
+#endif
+                return 0;
+            }
+            e = e->next;
+        } while(e != elast);
+    }
+    if(degree[v1]==4){
+        e = elast = firstedge[v1];
+        do {
+            if(degree[e->end]==4 && degree[e->next->end]==3 
+                    && e->next->end == e->invers->prev->end){
+#ifdef DO_PROFILING
+                fastFilterPruned[ne/2]++;
+#endif
+                return 0;
+            }
+            e = e->next;
+        } while(e != elast);
+    }
+    if(degree[v2]==4){
+        e = elast = firstedge[v2];
+        do {
+            if(degree[e->end]==4 && degree[e->next->end]==3 
+                    && e->next->end == e->invers->prev->end){
 #ifdef DO_PROFILING
                 fastFilterPruned[ne/2]++;
 #endif
