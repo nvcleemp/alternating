@@ -66,6 +66,10 @@ static int isAlternating(int nbtot, int nbop, int doflip) {
 #define FAST_FILTER_POLY checkDeletedEdge(e->start,e->end)
 
 static int checkDeletedEdge(int v1, int v2){
+    /*
+     * Checks for the creation of adjacent vertices of degree 3
+     * or a 3,4,4-triangle. If either of these has been created, return 0.
+     */
 #ifdef DO_PROFILING
     fastFilterCalled++;
     fastFilterCalls[ne/2]++;
