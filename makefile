@@ -1,4 +1,4 @@
-all: plantri alternating bialternating_23 bialternating_23_to_graph
+all: plantri alternating bialternating_23 bialternating_23_to_graph filter_vertex_alternating
 
 clean: 
 
@@ -22,3 +22,6 @@ bialternating_23: bialternating_23.c plantri.c
 
 bialternating_23_to_graph: bialternating_23_to_graph.c
 	$(CC) -o bialternating_23_to_graph -O4 bialternating_23_to_graph.c
+	
+filter_vertex_alternating: filter_vertex_alternating.c
+	$(CC) -o filter_vertex_alternating -O4 filter_vertex_alternating.c
