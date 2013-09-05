@@ -80,12 +80,98 @@ int nf;
 
 //////////////////////////////////////////////////////////////////////////////
 
-int isVertexAlternating() {
+//=============== Writing planarcode ===========================
+
+void writePlanarCodeChar(){
+    int i;
+    EDGE *e, *elast;
     
+    //write the number of vertices
+    fputc(nv, stdout);
+    
+    for(i=0; i<nv; i++){
+        e = elast = firstedge[i];
+        do {
+            fputc(e->end + 1, stdout);
+            e = e->next;
+        } while (e != elast);
+        fputc(0, stdout);
+    }
+}
+
+void writePlanarCodeShort(){
+    int i;
+    EDGE *e, *elast;
+    unsigned short temp;
+    
+    //write the number of vertices
+    fputc(0, stdout);
+    temp = nv;
+    if (fwrite(&temp, sizeof (unsigned short), 1, stdout) != 1) {
+        fprintf(stderr, "fwrite() failed -- exiting!\n");
+        exit(-1);
+    }
+    
+    for(i=0; i<nv; i++){
+        e = elast = firstedge[i];
+        do {
+            temp = e->end + 1;
+            if (fwrite(&temp, sizeof (unsigned short), 1, stdout) != 1) {
+                fprintf(stderr, "fwrite() failed -- exiting!\n");
+                exit(-1);
+            }
+            e = e->next;
+        } while (e != elast);
+        temp = 0;
+        if (fwrite(&temp, sizeof (unsigned short), 1, stdout) != 1) {
+            fprintf(stderr, "fwrite() failed -- exiting!\n");
+            exit(-1);
+        }
+    }
+}
+
+void writePlanarCode(){
+    static int first = TRUE;
+    
+    if(first){
+        first = FALSE;
+        
+        fprintf(stdout, ">>planar_code<<");
+    }
+    
+    if (nv + 1 <= 255) {
+        writePlanarCodeChar();
+    } else if (nv + 1 <= 65535) {
+        writePlanarCodeShort();
+    } else {
+        fprintf(stderr, "Graphs of that size are currently not supported -- exiting!\n");
+        exit(-1);
+    }
+    
+}
+
+//=============== Handling of graphs ===========================
+
+int isVertexAlternating() {
+    int i;
+    EDGE *e, *elast;
+    
+    for(i=0; i<nv; i++){
+        e = elast = firstedge[i];
+        do {
+            if (degree[e->end]==degree[i]) {
+                return FALSE;
+            }
+            e = e->next;
+        } while (e != elast);
+    }
+    return TRUE;
 } 
 
 void handleGraph() {
-    
+    if(isVertexAlternating()){
+        writePlanarCode();
+    }
 }
 
 //=============== Reading and decoding planarcode ===========================
