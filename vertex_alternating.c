@@ -1,18 +1,15 @@
 /* PLUGIN file to use with plantri.c 
 
    To use this, compile plantri.c using 
-       cc -o bialternating_23 -O4 '-DPLUGIN="bialternating_23.c"' plantri.c
+       cc -o vertex_alternating -O4 '-DPLUGIN="vertex_alternating.c"' plantri.c
 
-   This plug-in generates graphs that can be translated to alternating
-   planar graphs with degrees 2 and 3.   
+   This plug-in generates graphs that are vertex alternating
+   planar graphs.   
 */
 
-#define FILTER isAlternating
+#define FILTER isVertexAlternating
 
-static int isAlternating(int nbtot, int nbop, int doflip) {
-#ifdef DO_PROFILING
-    isAlternatingCount++;
-#endif
+static int isVertexAlternating(int nbtot, int nbop, int doflip) {
     
     int i;
     EDGE *e, *elast;
