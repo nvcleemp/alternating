@@ -35,6 +35,8 @@
 #define FALSE 0
 #define TRUE  1
 
+typedef int boolean;
+
 typedef struct e /* The data type used for edges */ {
     int start; /* vertex where the edge starts */
     int end; /* vertex where the edge ends */
@@ -72,7 +74,10 @@ static int markvalue = 30000;
 #define ISMARKEDLO(e) ((e)->mark == markvalue)
 #define ISMARKEDHI(e) ((e)->mark > markvalue)
 
+boolean onlyCount = FALSE;
+
 int numberOfGraphs = 0;
+int numberOfVertexAlternating = 0;
 
 int nv;
 int ne;
@@ -170,7 +175,10 @@ int isVertexAlternating() {
 
 void handleGraph() {
     if(isVertexAlternating()){
-        writePlanarCode();
+        numberOfVertexAlternating++;
+        if(!onlyCount){
+            writePlanarCode();
+        }
     }
 }
 
@@ -430,17 +438,21 @@ int main(int argc, char *argv[]) {
     int c;
     char *name = argv[0];
     static struct option long_options[] = {
-        {"help", no_argument, NULL, 'h'}
+        {"help", no_argument, NULL, 'h'},
+        {"count", no_argument, NULL, 'c'}
     };
     int option_index = 0;
 
-    while ((c = getopt_long(argc, argv, "h", long_options, &option_index)) != -1) {
+    while ((c = getopt_long(argc, argv, "hc", long_options, &option_index)) != -1) {
         switch (c) {
             case 0:
                 break;
             case 'h':
                 help(name);
                 return EXIT_SUCCESS;
+            case 'c':
+                onlyCount = TRUE;
+                break;
             case '?':
                 usage(name);
                 return EXIT_FAILURE;
@@ -460,5 +472,9 @@ int main(int argc, char *argv[]) {
         handleGraph();
         numberOfGraphs++;
     }
+    
+    fprintf(stdout, "Read %d graph%s of which %d %s vertex-alternating.\n",
+            numberOfGraphs, numberOfGraphs==1 ? "" : "s",
+            numberOfVertexAlternating, numberOfVertexAlternating==1 ? "was" : "were");
 
 }
