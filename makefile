@@ -1,8 +1,16 @@
+scriptfiles = bialternating_to_graph.sh runAlternating.sh\
+              runBialternating_23.sh runBialternating_24.sh
+
 all: build/plantri build/alternating build/vertex_alternating\
      build/bialternating_to_graph build/filter_vertex_alternating\
-     build/filter_balanced
+     build/filter_balanced\
+     script
 
 clean: 
+
+script:
+	mkdir -p build
+	cp $(scriptfiles) build/
 
 build/plantri: plantri.c
 	mkdir -p build
