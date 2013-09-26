@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./alternating -p -c2m3 $1
+./alternating -p -c1m3 $1
