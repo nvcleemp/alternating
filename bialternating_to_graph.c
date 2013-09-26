@@ -12,7 +12,7 @@
  * 
  * Compile with:
  *     
- *     cc -o bialternating_23_to_graph -O4 bialternating_23_to_graph.c
+ *     cc -o bialternating_to_graph -O4 bialternating_to_graph.c
  * 
  */
 
