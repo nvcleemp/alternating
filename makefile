@@ -3,7 +3,7 @@ scriptfiles = bialternating_to_graph.sh runAlternating.sh\
 
 all: build/plantri build/alternating build/vertex_alternating\
      build/bialternating_to_graph build/filter_vertex_alternating\
-     build/filter_balanced\
+     build/filter_balanced build/filter_alternating\
      script
 
 clean: 
@@ -47,3 +47,7 @@ build/filter_vertex_alternating: filter_vertex_alternating.c
 build/filter_balanced: filter_balanced.c
 	mkdir -p build
 	$(CC) -o build/filter_balanced -O4 filter_balanced.c
+
+build/filter_alternating: filter_alternating.c
+	mkdir -p build
+	$(CC) -o build/filter_alternating -O4 filter_alternating.c
